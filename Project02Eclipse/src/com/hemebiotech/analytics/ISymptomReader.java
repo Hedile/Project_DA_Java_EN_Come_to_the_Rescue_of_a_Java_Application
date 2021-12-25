@@ -24,10 +24,18 @@ public interface ISymptomReader {
 	/**
 	 * compter toutes les occurrences de tout symptôme
 	 * 
-	 * @return une liste de symptomes avec leurs frequences triés dans l'ordre
-	 *         alphbétique.
+	 * @return une liste non ordonnée de symptomes suivi du nombre d’occurrences.
 	 */
-	Map<String, Integer> SortedResult();
+	Map<String, Integer> OccurrenceCount(List<String> symptoms);
+
+	/**
+	 * 
+	 * Trier les symptomes dans l'ordre alphabétique.
+	 * 
+	 * @return une liste de symptomes triée dans l'ordre alphbétique, chaque
+	 *         symptome suivie du nombre d’occurrence.
+	 */
+	Map<String, Integer> SortedResult(Map<String, Integer> map);
 
 	/**
 	 *
@@ -37,6 +45,6 @@ public interface ISymptomReader {
 	 *         dans le fichier
 	 * @throws IOException
 	 */
-	void GetResult() throws IOException;
+	void GetResult(Map<String, Integer> result) throws IOException;
 
 }

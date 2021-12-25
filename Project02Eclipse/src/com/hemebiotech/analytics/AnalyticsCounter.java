@@ -6,13 +6,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class AnalyticsCounter implements ISymptomReader {
+
 	private String filepath;
 
 	/**
@@ -24,15 +25,14 @@ public class AnalyticsCounter implements ISymptomReader {
 		this.filepath = filepath;
 	}
 
-	// lecture du fichier
-	@Override
 	public List<String> GetSymptoms() {
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 
 		if (filepath != null) {
 			try {
 				BufferedReader reader = new BufferedReader(new FileReader(filepath));
 				String line = reader.readLine();
+
 				while (line != null) {
 					result.add(line);
 					line = reader.readLine();
@@ -42,31 +42,37 @@ public class AnalyticsCounter implements ISymptomReader {
 				e.printStackTrace();
 			}
 		}
+
 		return result;
 	}
 
-	public Map<String, Integer> SortedResult() {// compter toutes les occurrences de tout symptôme et Trier les
-												// symptomes dans l'ordre alphabétique
-		List<String> symptoms = new ArrayList<String>();
-		symptoms = GetSymptoms();
-		Map<String, Integer> result = new TreeMap<String, Integer>();
+	public Map<String, Integer> OccurrenceCount(List<String> symptoms) {
 
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		for (String symptom : symptoms) {
-			int frequence = Collections.frequency(symptoms, symptom);
-			result.put(symptom, frequence);
+			if (map.containsKey(symptom)) {
+				map.put(symptom, map.get(symptom) + 1);
+			} else {
+				map.put(symptom, 1);
+			}
 		}
+		return map;
+	}
 
+	public Map<String, Integer> SortedResult(Map<String, Integer> map) {
+
+		Map<String, Integer> result = new TreeMap<String, Integer>();
+		result.putAll(map);
 		return result;
 
 	}
 
-	public void GetResult() throws IOException {// générer un nouveau fichier texte et enregistrer les symptômes triées
+	public void GetResult(Map<String, Integer> result) throws IOException {
+
 		try {
 
 			File file = new File("Project02Eclipse/result.out");
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			Map<String, Integer> result = new TreeMap<String, Integer>();
-			result = SortedResult();
 			for (Entry<String, Integer> entry : result.entrySet()) {
 				fw.write(entry + "\r\n");
 			}
